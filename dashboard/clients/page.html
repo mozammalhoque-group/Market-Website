@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Client Dashboard</title>
+<link rel="stylesheet" href="../css/client.css">
+</head>
+<body>
+<div id="content">
+    <h2>Loading your pages...</h2>
+</div>
+<button id="logoutBtn">Logout</button>
+
+<script type="module">
+import { auth, db } from '../../firebase/firebase-config.js';
+import { logout } from '../../firebase/auth.js';
+import { onAuthStateChanged, doc, getDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.6.1/firebase-firestore.js";
+import { redirect } from '../../firebase/utils.js';
+
+onAuthStateChanged(auth, async (user) => {
+    if (!user) redirect('login.html');
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const userid = urlParams.get('userid');
+    const pagesRef = collection(db, 'pages', userid);
+    const pagesSnap = await getDocs(pagesRef);
+
+    const container = document.getElementById('content');
+    container.innerHTML = '';
+    pagesSnap.forEach(docSnap => {
+        const data = docSnap.data();
+        const div = document.createElement('div');
+        div.innerHTML = `<h3>${docSnap.id}</h3>${data.htmlContent}`;
+        container.appendChild(div);
+    });
+});
+
+document.getElementById('logoutBtn').addEventListener('click', () => {
+    logout();
+    redirect('login.html');
+});
+</script>
+</body>
+</html>
