@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Client Login</title>
+<link rel="stylesheet" href="../css/client.css">
+</head>
+<body>
+<div class="login-container">
+    <h2>Client Login</h2>
+    <form id="clientLoginForm">
+        <input type="text" id="userid" placeholder="User ID" required>
+        <input type="password" id="password" placeholder="Password" required>
+        <button type="submit">Login</button>
+    </form>
+    <p id="error" style="color:red;"></p>
+</div>
+
+<script type="module">
+import { clientLogin } from '../../firebase/auth.js';
+import { redirect, generateClientEmail } from '../../firebase/utils.js';
+
+const form = document.getElementById('clientLoginForm');
+const errorMsg = document.getElementById('error');
+
+form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const userid = document.getElementById('userid').value.trim();
+    const password = document.getElementById('password').value;
+    try {
+        const user = await clientLogin(userid, password);
+        redirect(`page.html?userid=${userid}`);
+    } catch (err) {
+        errorMsg.textContent = err.message;
+    }
+});
+</script>
+</body>
+</html>
