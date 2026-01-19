@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Manage Client Pages</title>
+<link rel="stylesheet" href="../css/admin.css">
+</head>
+<body>
+<h2>Client Pages Editor</h2>
+
+<div>
+    <select id="selectClient">
+        <option value="">Select Client</option>
+    </select>
+</div>
+
+<div>
+    <input type="text" id="pageName" placeholder="New Page Name">
+    <textarea id="pageContent" placeholder="HTML content"></textarea>
+    <button id="savePage">Save Page</button>
+</div>
+
+<div id="pagesList">
+    <h3>Client Pages</h3>
+    <ul id="pagesUl"></ul>
+</div>
+
+<script type="module">
+import { db, auth } from '../../../firebase/firebase-config.js';
+import { redirect } from '../../../firebase/utils.js';
+import { collection, doc, getDocs, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.6.1/firebase-firestore.js";
+
+// Auth check
+auth.onAuthStateChanged(user=>{
+    if(!user) redirect('login.html');
+});
+
+const selectClient = document.getElementById('selectClient');
+const pageNameInput = document.getElementById('pageName');
+const pageContentInput = document.getElementById('pageContent');
+const saveBtn = document.getElementById('savePage');
+const pagesUl = document.getElementById('pagesUl');
+
+// Load clients in dropdown
+async function loadClients(){
+    const clientsSnap = await getDocs(collection(db, 'users', 'clients'));
+    clientsSnap.forEach(docSnap=>{
+        const opt = document.createElement('option');
+        opt.value = docSnap.id;
+        opt.textContent = docSnap.data().displayName;
+        selectClient.appendChild(opt);
+    });
+}
+loadClients();
+
+// Load pages when client selected
+selectClient.addEventListener('change', async ()=>{
+    pagesUl.innerHTML = '';
+    const clientId = selectClient.value;
+    if(!clientId) return;
+    const pagesSnap = await getDocs(collection(db, 'pages', clientId));
+    pagesSnap.forEach(docSnap=>{
+        const li = document.createElement('li');
+        li.innerHTML = `${docSnap.id} <button class="editBtn">Edit</button> <button class="delBtn">Delete</button>`;
+        const editBtn = li.querySelector('.editBtn');
+        editBtn.addEventListener('click', ()=>{
+            pageNameInput.value = docSnap.id;
+            pageContentInput.value = docSnap.data().htmlContent;
+        });
+        const delBtn = li.querySelector('.delBtn');
+        delBtn.addEventListener('click', async ()=>{
+            await deleteDoc(doc(db, 'pages', clientId, docSnap.id));
+            alert('Page deleted');
+            selectClient.dispatchEvent(new Event('change'));
+        });
+        pagesUl.appendChild(li);
+    });
+});
+
+// Save new page or update
+saveBtn.addEventListener('click', async ()=>{
+    const clientId = selectClient.value;
+    const pageName = pageNameInput.value.trim();
+    const content = pageContentInput.value;
+    if(!clientId || !pageName || !content) return alert('Fill all fields');
+    await setDoc(doc(db, 'pages', clientId, pageName), {
+        htmlContent: content,
+        updatedBy: auth.currentUser.uid,
+        updatedAt: new Date()
+    });
+    alert('Page saved!');
+    selectClient.dispatchEvent(new Event('change'));
+});
+</script>
+</body>
+</html>
