@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Admin Dashboard</title>
+<link rel="stylesheet" href="../css/admin.css">
+</head>
+<body>
+<h2>Welcome Admin</h2>
+<nav>
+    <a href="clients.html">Manage Clients</a> |
+    <a href="pages.html">Manage Pages</a> |
+    <a href="settings.html">Settings</a> |
+    <button id="logoutBtn">Logout</button>
+</nav>
+
+<script type="module">
+import { logout } from '../../../firebase/auth.js';
+import { redirect } from '../../../firebase/utils.js';
+
+document.getElementById('logoutBtn').addEventListener('click', ()=>{
+    logout();
+    redirect('login.html');
+});
+</script>
+</body>
+</html>
