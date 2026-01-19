@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Manage Clients</title>
+<link rel="stylesheet" href="../css/admin.css">
+</head>
+<body>
+<h2>Clients Management</h2>
+<div class="form-container">
+    <h3>Create Client</h3>
+    <form id="createClientForm">
+        <input type="text" id="clientUserid" placeholder="User ID" required>
+        <input type="text" id="clientName" placeholder="Client Name" required>
+        <input type="password" id="clientPassword" placeholder="Password" required>
+        <button type="submit">Create Client</button>
+    </form>
+</div>
+
+<div class="client-list">
+    <h3>Existing Clients</h3>
+    <ul id="clientsUl"></ul>
+</div>
+
+<script type="module">
+import { db, auth } from '../../../firebase/firebase-config.js';
+import { redirect, generateClientEmail } from '../../../firebase/utils.js';
+import { createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.6.1/firebase-auth.js";
+import { setDoc, doc, collection, getDocs, deleteDoc } from "https://www.gstatic.com/firebasejs/10.6.1/firebase-firestore.js";
+
+// Check admin auth
+auth.onAuthStateChanged(user=>{
+    if(!user) redirect('login.html');
+});
+
+const clientsUl = document.getElementById('clientsUl');
+
+// Create Client
+document.getElementById('createClientForm').addEventListener('submit', async (e)=>{
+    e.preventDefault();
+    const userid = document.getElementById('clientUserid').value.trim();
+    const displayName = document.getElementById('clientName').value.trim();
+    const password = document.getElementById('clientPassword').value;
+
+    const fakeEmail = generateClientEmail(userid);
+
+    try {
+        // Firebase Auth create
+        await createUserWithEmailAndPassword(auth, fakeEmail, password);
+
+        // Firestore create
+        await setDoc(doc(db, 'users', 'clients', userid), {
+            displayName: displayName,
+            fakeEmail: fakeEmail,
+            pages: [],
+            createdAt: new Date()
+        });
+
+        alert(`Client ${displayName} created!`);
+        loadClients();
+    } catch(err){
+        alert(err.message);
+    }
+});
+
+// Load clients
+async function loadClients(){
+    clientsUl.innerHTML = '';
+    const clientsSnap = await getDocs(collection(db, 'users', 'clients'));
+    clientsSnap.forEach(docSnap=>{
+        const li = document.createElement('li');
+        li.textContent = `${docSnap.data().displayName} (${docSnap.id})`;
+        const deleteBtn = document.createElement('button');
+        deleteBtn.textContent = 'Delete';
+        deleteBtn.addEventListener('click', async ()=>{
+            const confirmName = prompt('Type client name to confirm deletion');
+            if(confirmName === docSnap.data().displayName){
+                await deleteDoc(doc(db, 'users', 'clients', docSnap.id));
+                alert('Client deleted!');
+                loadClients();
+            } else {
+                alert('Name mismatch. Delete cancelled.');
+            }
+        });
+        li.appendChild(deleteBtn);
+        clientsUl.appendChild(li);
+    });
+}
+
+// Initial load
+loadClients();
+</script>
+</body>
+</html>
