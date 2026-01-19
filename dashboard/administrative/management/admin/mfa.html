@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Admin MFA</title>
+<link rel="stylesheet" href="../css/admin.css">
+</head>
+<body>
+<div class="login-container">
+    <h2>Enter MFA Code</h2>
+    <form id="mfaForm">
+        <input type="text" id="mfaCode" placeholder="MFA Code" required>
+        <button type="submit">Verify</button>
+    </form>
+    <p id="error" style="color:red;"></p>
+</div>
+
+<script type="module">
+import { auth } from '../../../firebase/firebase-config.js';
+import { redirect } from '../../../firebase/utils.js';
+
+// Firebase MFA logic placeholder (actual implementation depends on SMS/App)
+// For demonstration, we assume a simple check
+document.getElementById('mfaForm').addEventListener('submit', (e)=>{
+    e.preventDefault();
+    const code = document.getElementById('mfaCode').value;
+    if(code === '123456'){ // replace with real Firebase MFA verification
+        redirect('dashboard.html');
+    }else{
+        document.getElementById('error').textContent = 'Invalid MFA code';
+    }
+});
+</script>
+</body>
+</html>
