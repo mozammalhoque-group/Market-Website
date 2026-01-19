@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Admin Settings</title>
+<link rel="stylesheet" href="../css/admin.css">
+</head>
+<body>
+<h2>Admin Settings</h2>
+<div>
+    <h3>Change Password</h3>
+    <input type="password" id="newPassword" placeholder="New Password">
+    <button id="changePasswordBtn">Change Password</button>
+</div>
+
+<script type="module">
+import { auth, changePassword } from '../../../firebase/auth.js';
+import { redirect } from '../../../firebase/utils.js';
+
+auth.onAuthStateChanged(user=>{
+    if(!user) redirect('login.html');
+    document.getElementById('changePasswordBtn').addEventListener('click', async ()=>{
+        const newPass = document.getElementById('newPassword').value.trim();
+        if(!newPass) return alert('Enter password');
+        try {
+            await changePassword(user, newPass);
+            alert('Password changed!');
+        } catch(err){
+            alert(err.message);
+        }
+    });
+});
+</script>
+</body>
+</html>
