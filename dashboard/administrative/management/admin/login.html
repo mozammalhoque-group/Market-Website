@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Admin Login</title>
-<link rel="stylesheet" href="../css/admin.css">
+<link rel="stylesheet" href="/dashboard/administrative/management/admin/css/admin.css">
 </head>
 <body>
 <div class="login-container">
@@ -17,8 +17,8 @@
 </div>
 
 <script type="module">
-import { adminLogin } from '../../../firebase/auth.js';
-import { redirect } from '../../../firebase/utils.js';
+import { adminLogin } from '/firebase/auth.js';
+import { redirect } from '/firebase/utils.js';
 
 const form = document.getElementById('adminLoginForm');
 const errorMsg = document.getElementById('error');
