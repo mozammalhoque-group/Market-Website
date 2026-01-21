@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Admin Dashboard</title>
-<link rel="stylesheet" href="../css/admin.css">
+<link rel="stylesheet" href="/dashboard/administrative/management/admin/css/admin.css">
 </head>
 <body>
 <h2>Welcome Admin</h2>
@@ -15,8 +15,8 @@
 </nav>
 
 <script type="module">
-import { logout } from '../../../firebase/auth.js';
-import { redirect } from '../../../firebase/utils.js';
+import { logout } from '/firebase/auth.js';
+import { redirect } from '/firebase/utils.js';
 
 document.getElementById('logoutBtn').addEventListener('click', ()=>{
     logout();
