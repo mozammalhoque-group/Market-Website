@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Manage Clients</title>
-<link rel="stylesheet" href="../css/admin.css">
+<link rel="stylesheet" href="/dashboard/administrative/management/css/admin.css">
 </head>
 <body>
 <h2>Clients Management</h2>
@@ -23,8 +23,8 @@
 </div>
 
 <script type="module">
-import { db, auth } from '../../../firebase/firebase-config.js';
-import { redirect, generateClientEmail } from '../../../firebase/utils.js';
+import { db, auth } from '/firebase/firebase-config.js';
+import { redirect, generateClientEmail } from '/firebase/utils.js';
 import { createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.6.1/firebase-auth.js";
 import { setDoc, doc, collection, getDocs, deleteDoc } from "https://www.gstatic.com/firebasejs/10.6.1/firebase-firestore.js";
 
