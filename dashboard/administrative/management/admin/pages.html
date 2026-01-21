@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Manage Client Pages</title>
-<link rel="stylesheet" href="../css/admin.css">
+<link rel="stylesheet" href="/dashboard/administrative/management/admin/css/admin.css">
 </head>
 <body>
 <h2>Client Pages Editor</h2>
@@ -26,8 +26,8 @@
 </div>
 
 <script type="module">
-import { db, auth } from '../../../firebase/firebase-config.js';
-import { redirect } from '../../../firebase/utils.js';
+import { db, auth } from '/firebase/firebase-config.js';
+import { redirect } from '/firebase/utils.js';
 import { collection, doc, getDocs, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.6.1/firebase-firestore.js";
 
 // Auth check
