@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Client Dashboard</title>
-<link rel="stylesheet" href="../css/client.css">
+<link rel="stylesheet" href="/dashboard/clients/css/client.css">
 </head>
 <body>
 <div id="content">
@@ -12,8 +12,8 @@
 <button id="logoutBtn">Logout</button>
 
 <script type="module">
-import { auth, db } from '../../firebase/firebase-config.js';
-import { logout } from '../../firebase/auth.js';
+import { auth, db } from '/firebase/firebase-config.js';
+import { logout } from '/firebase/auth.js';
 import { onAuthStateChanged, doc, getDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.6.1/firebase-firestore.js";
 import { redirect } from '../../firebase/utils.js';
 
